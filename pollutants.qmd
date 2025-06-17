@@ -1,0 +1,92 @@
+---
+execute: 
+  echo: false
+  message: false
+  warning: false
+html:
+    css: styles.css
+cache: true
+---
+
+
+```{r}
+library(tidyverse)
+library(primer.data)
+library(gganimate)
+library(brms)
+library(readr)
+library(gtsummary)
+library(transformr)
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(shiny)
+```
+
+---------
+```{r}
+fire <- read_csv(file = "C:/Users/RG/Downloads/Air_Quality.csv", col_names = TRUE, show_col_types = FALSE)
+```
+
+```{r}
+data <- data.frame(
+  Date = rep(seq(as.Date("2023-01-01"), as.Date("2023-01-05"), by = "days"), each = 3),
+  Pollutant = rep(c("PM2.5", "Ozone", "CO"), times = 5),
+  AQI = c(150, 120, 90, 200, 180, 110, 180, 160, 130, 210, 190, 120, 170, 150, 100)
+)
+
+animated_bar <- ggplot(data, aes(x = reorder(Pollutant, -AQI), y = AQI, fill = Pollutant)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Air Quality Index Over Time", 
+       subtitle = "Date: {frame_time}", 
+       x = "Pollutant", 
+       y = "AQI") +
+  scale_fill_manual(values = c(
+  "#F06292", 
+    "#D81B60", 
+    "#D5006D"  
+  )) +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  transition_time(Date) +
+  ease_aes('linear')
+
+animate(animated_bar, nframes = 100, fps = 10)
+
+```
+PM2.5 - fine particulate matter made of dust, soot, and chemicals that pose serious health risks.
+
+
+
+
+-------------
+- **Trends:** PM2.5 varies most.  
+- **Peaks:** Wildfires drive PM2.5 spikes.  
+- **Impact:** Wildfires worsen air quality.  
+- **Driver:** PM2.5 dominates pollution.    
+----------
+
+
+```{r}
+# Sample data
+data <- data.frame(
+  Category = c("PM2.5", "Ozone", "CO", "NO2", "SO2"),
+  Value = c(150, 180, 120, 90, 60)
+)
+
+# Create plotly pie chart
+plot_ly(data, labels = ~Category, values = ~Value, type = 'pie',
+        textinfo = 'none',  # No text on slices
+        hoverinfo = 'label+value+percent',  # Info on hover
+        marker = list(colors = c("#f763b5", "#813ea8", "#d166f2", "#81D4FA", "#1976D2"))
+) %>%
+  layout(title = "Pollutant Distribution by Category",
+         legend = list(orientation = "v", x = 1, y = 0.9),
+         margin = list(l = 20, r = 20, t = 50, b = 20))
+
+```
+-----------
+- **Pollutants:** PM2.5 and Ozone dominate.  
+- **Drivers:** Wildfires and industry boost PM2.5.  
+- **Action:** Reduce these for cleaner air.  
+--------
