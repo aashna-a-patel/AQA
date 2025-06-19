@@ -25,7 +25,7 @@ library(shiny)
 
 
 ```{r}
-fire <- read_csv(file = "C:/Users/RG/Downloads/Air_Quality.csv", col_names = TRUE, show_col_types = FALSE)
+fire <- read_csv(file = "Air_Quality.csv", col_names = TRUE, show_col_types = FALSE)
 ```
 
 ```{r}
@@ -76,7 +76,7 @@ map
 - **Hotspots:** Elevated PM2.5 and SO2 in key areas.  
 - **Variation:** Pollution varies regionally.  
 - **Policy:** Stricter monitoring needed.  
-- **Trends:** Data aids policy refinement.  
+- **Trends:** Data aids policy refinement.   
 
 
 
