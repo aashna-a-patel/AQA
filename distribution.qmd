@@ -79,13 +79,42 @@ map
 - **Trends:** Data aids policy refinement.   
 
 
+```{r}
+library(tidyverse)
+library(lubridate)
 
+# Suppose you have already loaded your CSV as:
+air_quality <- read_csv("Air_Quality.csv", show_col_types = FALSE)
 
+# 1. Filter for Nitrogen dioxide (NO2)
+no2_data <- air_quality %>%
+  filter(Name == "Nitrogen dioxide (NO2)")
 
+# 2. Convert Start_Date to Date type if not already
+no2_data <- no2_data %>%
+  mutate(Start_Date = as.Date(Start_Date, format = "%m/%d/%Y"),
+         Year = year(Start_Date))
 
+# 3. Group by Year and summarize average Data Value
+no2_trend <- no2_data %>%
+  group_by(Year) %>%
+  summarize(avg_no2 = mean(`Data Value`, na.rm = TRUE)) %>%
+  arrange(Year)
 
+# 4. Plot the decline over time with ggplot2
+ggplot(no2_trend, aes(x = Year, y = avg_no2)) +
+  geom_point(color = "#6a51a3", size = 3) +        # purple points
+  geom_smooth(method = "loess", se = TRUE, color = "#9e9ac8", fill = "#dadaeb") +  # smooth trend
+  labs(
+    title = "Nitrogen Dioxide (NO2) Levels in NYC",
+    x = "Year",
+    y = "Average NO2 (ppb)",
+    caption = "Data source: Air Quality dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(size = 12)
+  )
 
-
-
-
-
+```

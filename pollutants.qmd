@@ -8,7 +8,6 @@ html:
 cache: true
 ---
 
-
 ```{r}
 library(tidyverse)
 library(primer.data)
@@ -21,6 +20,7 @@ library(ggplot2)
 library(dplyr)
 library(plotly)
 library(shiny)
+library(gifski)
 ```
 
 ---------
@@ -28,7 +28,10 @@ library(shiny)
 fire <- read_csv(file = "Air_Quality.csv", col_names = TRUE, show_col_types = FALSE)
 ```
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(gganimate)
+
 data <- data.frame(
   Date = rep(seq(as.Date("2023-01-01"), as.Date("2023-01-05"), by = "days"), each = 3),
   Pollutant = rep(c("PM2.5", "Ozone", "CO"), times = 5),
@@ -37,27 +40,21 @@ data <- data.frame(
 
 animated_bar <- ggplot(data, aes(x = reorder(Pollutant, -AQI), y = AQI, fill = Pollutant)) +
   geom_bar(stat = "identity") +
-  labs(title = "Air Quality Index Over Time", 
-       subtitle = "Date: {frame_time}", 
-       x = "Pollutant", 
+  labs(title = "Air Quality Index Over Time",
+       subtitle = "Date: {frame_time}",
+       x = "Pollutant",
        y = "AQI") +
-  scale_fill_manual(values = c(
-  "#F06292", 
-    "#D81B60", 
-    "#D5006D"  
-  )) +
+  scale_fill_manual(values = c("#F06292", "#D81B60", "#D5006D")) +
   theme_minimal() +
   theme(legend.position = "none") +
   transition_time(Date) +
   ease_aes('linear')
 
-animate(animated_bar, nframes = 100, fps = 10)
+animate(animated_bar, nframes = 100, fps = 10, renderer = gifski_renderer())
 
 ```
+
 PM2.5 - fine particulate matter made of dust, soot, and chemicals that pose serious health risks.
-
-
-
 
 -------------
 - **Trends:** PM2.5 varies most.  
@@ -65,7 +62,6 @@ PM2.5 - fine particulate matter made of dust, soot, and chemicals that pose seri
 - **Impact:** Wildfires worsen air quality.  
 - **Driver:** PM2.5 dominates pollution.    
 ----------
-
 
 ```{r}
 # Sample data
@@ -85,6 +81,7 @@ plot_ly(data, labels = ~Category, values = ~Value, type = 'pie',
          margin = list(l = 20, r = 20, t = 50, b = 20))
 
 ```
+
 -----------
 - **Pollutants:** PM2.5 and Ozone dominate.  
 - **Drivers:** Wildfires and industry boost PM2.5.  
